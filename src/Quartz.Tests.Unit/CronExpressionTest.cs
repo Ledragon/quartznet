@@ -667,6 +667,15 @@ namespace Quartz.Tests.Unit
             Assert.That(e.Message, Is.EqualTo("'/' must be followed by an integer."));
         }
 
+        [Test]
+        public void ShouldHandleDaylightSavings()
+        {
+            var cronExpression = new CronExpression("0 0/15 * * * ?");
+            var dt = new DateTime(2017,10,29,0,59,59,DateTimeKind.Utc);
+            var next = cronExpression.GetTimeAfter(new DateTimeOffset(dt));
+            Assert.AreEqual(new DateTime(2017,10,29,1,0,0, DateTimeKind.Utc), next.Value.UtcDateTime);
+        }
+
         private class SimpleCronExpression : CronExpression
         {
             public SimpleCronExpression(string cronExpression)
